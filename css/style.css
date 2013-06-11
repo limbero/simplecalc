@@ -51,6 +51,7 @@ span.code {
 }
 #example1:hover {
     cursor: pointer;
+    background: #FFF89C;
 }
 
 /*FORM*/
@@ -100,10 +101,4 @@ input[type=text]{
 }
 #submit:hover {
     cursor: pointer;
-}
-
-
-input:focus :-ms-input-placeholder {
-    color: #999;
-    visibility: visible;
 }
