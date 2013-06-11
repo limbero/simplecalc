@@ -11,7 +11,10 @@
     <script type="text/javascript" src="./js/jquery-1.10.1.min.js"></script>
     <script type="text/javascript" src="./js/math-0.9.0.min.js"></script>
     <script type="text/javascript">
+    var currs = ['AED','AFN','ALL','AMD','ANG','AOA','ARS','AUD','AWG','AZN','BAM','BBD','BDT','BGN','BHD','BIF','BMD','BND','BOB','BRL','BSD','BTN','BWP','BYR','BZD','CAD','CDF','CHF','CLP','CNY','COP','CRC','CUC','CUP','CVE','CZK','DJF','DKK','DOP','DZD','EGP','ERN','ETB','EUR','FJD','FKP','GBP','GEL','GGP','GHS','GIP','GMD','GNF','GTQ','GYD','HKD','HNL','HRK','HTG','HUF','IDR','ILS','IMP','INR','IQD','IRR','ISK','JEP','JMD','JOD','JPY','KES','KGS','KHR','KMF','KPW','KRW','KWD','KYD','KZT','LAK','LBP','LKR','LRD','LSL','LTL','LVL','LYD','MAD','MDL','MGA','MKD','MMK','MNT','MOP','MRO','MUR','MVR','MWK','MXN','MYR','MZN','NAD','NGN','NIO','NOK','NPR','NZD','OMR','PAB','PEN','PGK','PHP','PKR','PLN','PYG','QAR','RON','RSD','RUB','RWF','SAR','SBD','SCR','SDG','SEK','SGD','SHP','SLL','SOS','SPL','SRD','STD','SVC','SYP','SZL','THB','TJS','TMT','TND','TOP','TRY','TTD','TVD','TWD','TZS','UAH','UGX','USD','UYU','UZS','VEF','VND','VUV','WST','XAF','XCD','XDR','XOF','XPF','YER','ZAR','ZMW','ZWD'];
+
     $(document).ready(function() {
+
         //cache jquery variables
         $calc=$('#calc');
         $ans=$('#ans');
@@ -21,39 +24,75 @@
 
         setInterval(function(){calculate()},30); //recalculate every 30ms to make it appear instant
 
-        $('#calc').keypress(function(event) { //click the submit button if enter is pressed
+        //click the submit button if enter is pressed
+        $('#calc').keypress(function(event) {
             if(event.keyCode == 13) {
                 $('#submit').click();
             }
         });
 
-        $('#submit').click(function() { //focus the answer if the submit button is clicked
+        //focus the answer if the submit button is clicked
+        $('#submit').click(function() {
             $ans.focus();
         });
-        $ans.focus(function() { //select the answer if it is focused
+        //select the answer if it is focused
+        $ans.focus(function() {
             this.select();
         });
         
-        $('#example1').click(function() { //paste the code sample into the calculation box if it's clicked
+        //paste the code sample into the calculation box if it's clicked
+        $('.example').click(function() {
             $calc.val($(this).text());
         });
     });
 
     function calculate () {
         if($old!==$calc.val()) { //don't redo the same calculation over and over
-            
+
             if($calc.val()==="i^2") { //special case since Math.js can't handle i^2
                 $ans.val("-1");
             }
             else if($calc.val()==="i/0") { //special case since Math.js can't handle i/0
-                $ans.val("infinity");
+                $ans.val("Infinity");
             }
             else {
-                try {
-                    $ans.val(math.eval($calc.val()));
+                $strs = $calc.val().split(" "); //split into words
+
+                //check if it has the right amount of words for being a currency conversion
+                if($strs[0] && $strs[1] && $strs[2] && $strs[3] && !$strs[4]){
+
+                    //check that we are in fact dealing with currencies
+                    if(currs.indexOf($strs[1].toUpperCase())!==-1 && $strs[2].toLowerCase()==="in" && currs.indexOf($strs[3].toUpperCase())!==-1){
+                        $from = $strs[1].toUpperCase();
+                        $to = $strs[3].toUpperCase();
+
+                        //do a jsonp request for the exchange rate
+                        $.getJSON("http://rate-exchange.appspot.com/currency?callback=?", { "from": $from, "to": $to }, function (result) {
+                            if (!result.err) {
+                                $rate = result.rate;
+                                $ans.val(math.eval($strs[0]+"*"+$rate)+" "+$to); //compute the amount from the first amount and the rate
+                            }
+                            else {
+                                $ans.val("Currency conversion failed");
+                            }
+                        });
+                    }
+                    else {
+                        try {
+                            $ans.val(math.eval($calc.val()));
+                        }
+                        catch(err){
+                            $ans.val('Invalid expression');
+                        }
+                    }
                 }
-                catch(err){
-                    $ans.val('Invalid expression');
+                else {
+                    try {
+                        $ans.val(math.eval($calc.val()));
+                    }
+                    catch(err){
+                        $ans.val('Invalid expression');
+                    }
                 }
             }
         }
@@ -73,9 +112,11 @@
         <input placeholder=" is instantaneously evaluated here" id="ans" type="text" readonly>
     </form>
     <p id="tips">
-        <span style="font-weight: bold">Hints:</span><br>
-        Pressing the enter key will select the answer, to copy for later use.<br>
-        SimpleCalc can do more than just math. Try <span id="example1" class="code">186 cm in inch</span>.
+        <span style="font-weight: bold">Hints:</span><br><br>
+        Pressing the enter key will select the answer, to copy for later use.<br><br>
+        SimpleCalc can do more than just math. Try <span class="code example">186 cm in inch</span>.<br><br>
+        SimpleCalc can now do currency conversions too. Try <span class="code example">399 USD in SEK</span>,
+        (Multiply the number you get by 1.25 and get an optimistic estimate of the PS4's price in Sweden).
     </p>
 </body>
 </html>

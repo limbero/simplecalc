@@ -36,8 +36,12 @@ p#byline {
 p#tips {
     font-size: 14px;
 
+    width: 550px;
+
+    margin: auto;
     margin-top: 50px;
 }
+
 span.code {
     background: #DDD;
 
@@ -49,7 +53,7 @@ span.code {
     padding-left: 2px;
     padding-right: 2px;
 }
-#example1:hover {
+.example:hover {
     cursor: pointer;
     background: #FFF89C;
 }
