@@ -1,0 +1,109 @@
+/*GENERAL*/
+html, body {
+    color: #111;
+    background: #FFF;
+
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-weight: 100;
+    text-align: center;
+}
+h1 {
+    font-weight: 100;
+    font-size: 80px;
+
+    margin: 10px;
+    margin-top: 170px;
+    margin-bottom: 0px;
+}
+p {
+    color: #666;
+
+    font-size: 16px;
+    font-weight: 300;
+}
+p a {
+    color: #666;
+
+    text-decoration: none;
+    border-bottom: 1px solid #FF3D00;
+}
+
+/*SPECIFICS*/
+p#byline {
+    margin-top: 0px;
+    margin-bottom: 50px;
+}
+p#tips {
+    font-size: 14px;
+
+    margin-top: 50px;
+}
+span.code {
+    background: #DDD;
+
+    font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+    font-size: 14px;
+    white-space: pre;
+
+    padding: 1px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+#example1:hover {
+    cursor: pointer;
+}
+
+/*FORM*/
+form {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+input[type=text]{
+    background: #FFF;
+
+    border: 1px solid #FFF;
+    border-radius: 10px;
+    outline: none;
+
+    height: 30px;
+    width: 390px;
+    padding: 10px;
+
+    font-size: 25px;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-weight: 300;
+}
+#calc {
+    text-align: right;
+}
+#ans {
+    text-align: left;
+}
+
+#submit {
+    color: #FFF;
+    background: #FF3D00;
+
+    font-size: 20px;
+
+    border: 1px solid #FF3D00;
+    border-radius: 10px;
+    outline: none;
+
+    height: 52px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    margin-left: 10px;
+    margin-right: 10px;
+}
+#submit:hover {
+    cursor: pointer;
+}
+
+
+input:focus :-ms-input-placeholder {
+    color: #999;
+    visibility: visible;
+}

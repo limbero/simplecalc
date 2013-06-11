@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="description" content="Web calculator by Axel Samuelsson, powered by Math.js">
+    <meta name="keywords" content="simple, javascript, js, math, calculator, calc, Axel Samuelsson">
+    <meta name="author" content="Axel Samuelsson">
+
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+
+    <script type="text/javascript" src="./js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="./js/math-0.9.0.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        //cache jquery variables
+        $calc=$('#calc');
+        $ans=$('#ans');
+        $old = null;
+
+        $calc.focus(); //focus the calculation box for ease of use
+
+        setInterval(function(){calculate()},30); //recalculate every 30ms to make it appear instant
+
+        $('#calc').keypress(function(event) { //click the submit button if enter is pressed
+            if(event.keyCode == 13) {
+                $('#submit').click();
+            }
+        });
+
+        $('#submit').click(function() { //focus the answer is the submit button is clicked
+            $ans.focus();
+        });
+        $ans.focus(function() { //select the answer if it is focused
+            this.select();
+        });
+        
+        $('#example1').click(function() { //paste the code sample into the calculation box if it's clicked
+            $calc.val($(this).text());
+        });
+    });
+
+    function calculate () {
+        if($old!==$calc.val()) { //don't redo the same calculation over and over
+            
+            if($calc.val()==="i^2") { //special case since Math.js can't handle i^2
+                $ans.val("-1");
+            }
+            else if($calc.val()==="i/0") { //special case since Math.js can't handle i/0
+                $ans.val("infinity");
+            }
+            else {
+                try {
+                    $ans.val(math.eval($calc.val()));
+                }
+                catch(err){
+                    $ans.val('Invalid expression');
+                }
+            }
+        }
+        $old=$calc.val();
+    }
+    </script>
+    <title>SimpleCalc by Axel Samuelsson</title>
+</head>
+<body>
+    <h1>SimpleCalc</h1>
+    <p id="byline">
+        Powered by <a href="http://mathjs.org/" target="_blank">Math.js</a>. Made by <a href="http://axelsamuelsson.com" target="_blank">Axel Samuelsson</a>.
+    </p>
+    <form>
+        <input id="calc" placeholder="Your calculation or expression " type="text" autocomplete="off">
+        <input id="submit" title="Highlight the answer for easy copying to clipboard" value="=" type="button">
+        <input placeholder=" is instantaneously evaluated here" id="ans" type="text" readonly>
+    </form>
+    <p id="tips">
+        <span style="font-weight: bold">Hints:</span><br>
+        Pressing the enter key will select the answer, to copy for later use.<br>
+        SimpleCalc can do more than just math. Try <span id="example1" class="code">186 cm in inch</span>.
+    </p>
+</body>
+</html>
