@@ -12,7 +12,7 @@ h1 {
     font-size: 80px;
 
     margin: 10px;
-    margin-top: 170px;
+    margin-top: 100px;
     margin-bottom: 0px;
 }
 p {
@@ -34,16 +34,24 @@ p#byline {
     margin-bottom: 50px;
 }
 p#tips {
+    background: #DDD;
+
+    border: 1px solid #DDD;
+    border-radius: 10px;
+
     font-size: 14px;
 
     width: 550px;
 
+    padding: 10px;
+    padding-bottom: 20px;
+
     margin: auto;
-    margin-top: 50px;
+    margin-top: 100px;
 }
 
 span.code {
-    background: #DDD;
+    background: #BBB;
 
     font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
     font-size: 14px;
