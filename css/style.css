@@ -86,7 +86,7 @@ input[type=text]{
     text-align: left;
 }
 
-#submit {
+input[type=button] {
     color: #FFF;
     background: #FF3D00;
 
@@ -103,6 +103,16 @@ input[type=text]{
     margin-left: 10px;
     margin-right: 10px;
 }
-#submit:hover {
+input[type=button]:hover {
     cursor: pointer;
+}
+#clear {
+    background: #999;
+    border: 1px solid #999;
+}
+#submit {
+}
+#copyover {
+    background: #00C94D;
+    border: 1px solid #00C94D;
 }

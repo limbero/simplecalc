@@ -31,6 +31,12 @@
             }
         });
 
+        //clear the calculation box
+        $('#clear').click(function() {
+            $calc.val("");
+            $calc.focus();
+        });
+
         //focus the answer if the submit button is clicked
         $('#submit').click(function() {
             $ans.focus();
@@ -39,10 +45,33 @@
         $ans.focus(function() {
             this.select();
         });
+
+        //copy the number part of the answer to the calculation box
+        $('#copyover').click(function() {
+            //unit patterns, all letters except e and i
+            $pattern = /[A-Zabcdfghjklmnopqrstuvwxyz]/;
+
+            //no need to copy over invalid expression
+            if ($ans.val()==="Invalid expression"){
+                console.log("invalid");
+                $calc.val("");
+            }
+            else if($pattern.test($ans.val()) && $ans.val().indexOf(" ")!=-1) { //check if it has a unit
+                console.log("unit");
+                $index = $ans.val().lastIndexOf(" ");
+                $calc.val($ans.val().substring(0,$index).replace(/ /g,'')); //remove the unit
+            }
+            else { //just remove all spaces otherwise
+                console.log("number");
+                $calc.val($ans.val().replace(/ /g,''));
+            }
+            $calc.focus();
+        });
         
         //paste the code sample into the calculation box if it's clicked
         $('.example').click(function() {
             $calc.val($(this).text());
+            $calc.focus();
         });
     });
 
@@ -55,11 +84,14 @@
             else if($calc.val()==="i/0") { //special case since Math.js can't handle i/0
                 $ans.val("Infinity");
             }
+            else if($calc.val().toLowerCase()==="infinity") { //special case since Math.js can't handle i/0
+                $ans.val("Infinity");
+            }
             else {
                 $strs = $calc.val().split(" "); //split into words
 
                 //check if it has the right amount of words for being a currency conversion
-                if($strs[0] && $strs[1] && $strs[2] && $strs[3] && !$strs[4]){
+                if($strs[0] && $strs[1] && $strs[2] && $strs[3] && !$strs[4] && $strs[4]!==""){
 
                     //check that we are in fact dealing with currencies
                     if(currs.indexOf($strs[1].toUpperCase())!==-1 && $strs[2].toLowerCase()==="in" && currs.indexOf($strs[3].toUpperCase())!==-1){
@@ -79,21 +111,23 @@
                     }
                     else {
                         try {
-                            $answer = math.eval($calc.val()).toString();
-                            if($answer.indexOf(".")!==-1){
-                                $answer1 = $answer.split(".")[0];
-                                $answer2 = "."+$answer.split(".")[1];
+                            $answer = math.eval($calc.val()).toString(); //make a string to process
+
+                            if($answer.indexOf(".")!==-1){ //if it's a decimal value
+                                $answer1 = $answer.split(".")[0]; //keep the first part for modifying
+                                $answer2 = "."+$answer.split(".")[1]; //store away everything after the period, no need to change that
                             }
-                            else if ($answer.indexOf(" ")!==-1){
-                                $answer1 = $answer.split(" ")[0];
-                                $answer2 = " "+$answer.split(" ")[1];
+                            else if ($answer.indexOf(" ")!==-1){ //if it has a unit
+                                $answer1 = $answer.split(" ")[0]; //keep everything before the space for modifying
+                                $answer2 = " "+$answer.split(" ")[1]; //store away everything after the space, no need to change the unit
                             }
                             else {
+                                //just to initiate the variables otherwise
                                 $answer1 = $answer;
                                 $answer2 = "";
                             }
-                            $answer1 = $answer1.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-                            $answer = $answer1+$answer2;
+                            $answer1 = $answer1.replace(/\B(?=(\d{3})+(?!\d))/g, " ") //put in spaces between every thousand
+                            $answer = $answer1+$answer2; //add back the stored part
                             $ans.val($answer);
                         }
                         catch(err){
@@ -103,21 +137,23 @@
                 }
                 else {
                     try {
-                        $answer = math.eval($calc.val()).toString();
-                        if($answer.indexOf(".")!==-1){
-                            $answer1 = $answer.split(".")[0];
-                            $answer2 = "."+$answer.split(".")[1];
+                        $answer = math.eval($calc.val()).toString(); //make a string to process
+
+                        if($answer.indexOf(".")!==-1){ //if it's a decimal value
+                            $answer1 = $answer.split(".")[0]; //keep the first part for modifying
+                            $answer2 = "."+$answer.split(".")[1]; //store away everything after the period, no need to change that
                         }
-                        else if ($answer.indexOf(" ")!==-1){
-                            $answer1 = $answer.split(" ")[0];
-                            $answer2 = " "+$answer.split(" ")[1];
+                        else if ($answer.indexOf(" ")!==-1){ //if it has a unit
+                            $answer1 = $answer.split(" ")[0]; //keep everything before the space for modifying
+                            $answer2 = " "+$answer.split(" ")[1]; //store away everything after the space, no need to change the unit
                         }
                         else {
+                            //just to initiate the variables otherwise
                             $answer1 = $answer;
                             $answer2 = "";
                         }
-                        $answer1 = $answer1.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-                        $answer = $answer1+$answer2;
+                        $answer1 = $answer1.replace(/\B(?=(\d{3})+(?!\d))/g, " ") //put in spaces between every thousand
+                        $answer = $answer1+$answer2; //add back the stored part
                         $ans.val($answer);
                     }
                     catch(err){
@@ -125,6 +161,9 @@
                     }
                 }
             }
+        }
+        else if ($calc.val()===""){
+            $ans.val("");
         }
         $old=$calc.val();
     }
@@ -137,13 +176,17 @@
         Powered by <a href="http://mathjs.org/" target="_blank">Math.js</a>. Made by <a href="http://axelsamuelsson.com" target="_blank">Axel Samuelsson</a>.
     </p>
     <form>
-        <input id="calc" placeholder="Your calculation or expression " type="text" autocomplete="off">
+        <input id="clear" title="Clear the calculation box" value="&#x2715;" type="button">
+        <input id="calc" placeholder="Your calculation or expression here " type="text" autocomplete="off">
         <input id="submit" title="Highlight the answer for easy copying to clipboard" value="=" type="button">
-        <input placeholder=" is instantaneously evaluated here" id="ans" type="text" readonly>
+        <input placeholder=" is instantaneously evaluated in here" id="ans" type="text" readonly>
+        <input id="copyover" title="Copy the number part of the answer to the calculation box" value="&#8634;" type="button">
     </form>
     <p id="tips">
         <span style="font-weight: bold">Hints:</span><br><br>
-        Pressing the enter key will select the answer, to copy for later use.<br><br>
+        Pressing the enter key or clicking the equals sign will select the answer, to copy for later.<br><br>
+        Clicking the green button labeled &#8634; will copy the number part of the answer to the calculation box so you can continue your calculations on things with units.<br><br>
+        Clicking the grey button labeled &#x2715; will clear the calculation box.<br><br>
         SimpleCalc can do more than just math. Try <span class="code example">186 cm in inch</span>.<br><br>
         SimpleCalc can now do currency conversions too. Try <span class="code example">399 USD in SEK</span>,
         (Multiply the number you get by 1.25 and get an optimistic estimate of the PS4's price in Sweden).
