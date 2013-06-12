@@ -79,7 +79,7 @@
                     }
                     else {
                         try {
-                            $answer = math.eval($calc.val());
+                            $answer = math.eval($calc.val()).toString();
                             if($answer.indexOf(".")!==-1){
                                 $answer1 = $answer.split(".")[0];
                                 $answer2 = "."+$answer.split(".")[1];
