@@ -47,7 +47,7 @@
     });
 
     function calculate () {
-        if($old!==$calc.val()) { //don't redo the same calculation over and over
+        if($old!==$calc.val() && $calc.val()!=="") { //don't redo the same calculation over and over
 
             if($calc.val()==="i^2") { //special case since Math.js can't handle i^2
                 $ans.val("-1");
@@ -79,7 +79,22 @@
                     }
                     else {
                         try {
-                            $ans.val(math.eval($calc.val()));
+                            $answer = math.eval($calc.val());
+                            if($answer.indexOf(".")!==-1){
+                                $answer1 = $answer.split(".")[0];
+                                $answer2 = "."+$answer.split(".")[1];
+                            }
+                            else if ($answer.indexOf(" ")!==-1){
+                                $answer1 = $answer.split(" ")[0];
+                                $answer2 = " "+$answer.split(" ")[1];
+                            }
+                            else {
+                                $answer1 = $answer;
+                                $answer2 = "";
+                            }
+                            $answer1 = $answer1.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+                            $answer = $answer1+$answer2;
+                            $ans.val($answer);
                         }
                         catch(err){
                             $ans.val('Invalid expression');
@@ -88,7 +103,22 @@
                 }
                 else {
                     try {
-                        $ans.val(math.eval($calc.val()));
+                        $answer = math.eval($calc.val()).toString();
+                        if($answer.indexOf(".")!==-1){
+                            $answer1 = $answer.split(".")[0];
+                            $answer2 = "."+$answer.split(".")[1];
+                        }
+                        else if ($answer.indexOf(" ")!==-1){
+                            $answer1 = $answer.split(" ")[0];
+                            $answer2 = " "+$answer.split(" ")[1];
+                        }
+                        else {
+                            $answer1 = $answer;
+                            $answer2 = "";
+                        }
+                        $answer1 = $answer1.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+                        $answer = $answer1+$answer2;
+                        $ans.val($answer);
                     }
                     catch(err){
                         $ans.val('Invalid expression');
